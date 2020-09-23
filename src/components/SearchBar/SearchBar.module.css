@@ -1,0 +1,40 @@
+.header {
+  position: sticky;
+  height: 80px;
+  width: 100%;
+  background-color: #4354b0;
+  display: flex;
+  align-items: center;
+  box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
+    0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+}
+
+.searchForm {
+  position: relative;
+  /* height: 50px; */
+  width: 40%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.input {
+  width: 100%;
+  height: 40px;
+  padding-left: 40px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.searchBtn {
+  all: unset;
+  cursor: pointer;
+  overflow: hidden;
+  display: block;
+  height: 16px;
+  width: 16px;
+  background-image: url("../../search.svg");
+  background-size: contain;
+  position: absolute;
+  top: 14px;
+  left: 14px;
+}
