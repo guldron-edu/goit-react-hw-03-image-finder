@@ -12,8 +12,7 @@ function Button({ moreImages }) {
 }
 
 Button.propTypes = {
-  largeImageHref: PropTypes.string.isRequired,
-  smalllImageHref: PropTypes.string.isRequired,
+  moreImages: PropTypes.func.isRequired,
 };
 
 export default Button;

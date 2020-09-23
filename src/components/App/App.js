@@ -20,7 +20,18 @@ export default class App extends Component {
     loading: false,
     error: false,
     modalHref: false,
+    restoreSession: false,
   };
+
+  componentDidMount() {
+    const localStorageImages = localStorage.getItem("images");
+
+    if (localStorageImages && localStorageImages.length > 2) {
+      this.setState({
+        restoreSession: true,
+      });
+    }
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.searchQuery !== this.state.searchQuery) {
@@ -44,14 +55,12 @@ export default class App extends Component {
   };
 
   fetchRequest = () => {
-    const { searchQuery, page, perPage } = this.state;
-    //
+    const { searchQuery, page } = this.state;
     this.setState((prevState) => {
       return { page: prevState.page + 1, loading: true };
     });
 
-    // this.setState({ loading: true });
-    apiRequest(searchQuery, page, perPage)
+    apiRequest(searchQuery, page)
       .then((response) =>
         this.setState((prevState) => {
           return { images: [...prevState.images, ...response.hits] };
@@ -61,27 +70,31 @@ export default class App extends Component {
       .finally(() => this.setState({ loading: false }));
   };
 
-  // moreImages = async () => {
-  //   await this.setState((prevState) => {
-  //     return { page: prevState.page + 1 };
-  //   });
-  //   await this.fetchRequest();
-  // };
-
   onOpenModal = (ev) => {
     this.setState({ modalHref: ev.target.dataset.value });
-    window.addEventListener("keydown", this.onCloseModal);
-  };
-
-  onCloseModal = (ev) => {
-    if (ev.code === "Escape" || ev.target.nodeName === "DIV") {
-      this.setState({ modalHref: "" });
-      window.removeEventListener("keydown", this.onCloseModal);
+    if (this.state.restoreSession) {
+      this.clearLs();
     }
   };
 
+  onCloseModal = (ev) => {
+    this.setState({ modalHref: "" });
+  };
+
+  clearLs = () => {
+    localStorage.removeItem("images");
+    this.setState({ restoreSession: false });
+  };
+
+  restoreLs = () => {
+    this.setState({
+      images: JSON.parse(localStorage.getItem("images")),
+    });
+    this.clearLs();
+  };
+
   render() {
-    const { images, loading, modalHref } = this.state;
+    const { images, loading, modalHref, restoreSession } = this.state;
 
     return (
       <div className={styles.wrapper}>
@@ -94,6 +107,14 @@ export default class App extends Component {
         )}
         {loading && <Spinner />}
         {modalHref && <Modal href={modalHref} closeModal={this.onCloseModal} />}
+        {restoreSession && (
+          <Modal
+            closeModal={this.onCloseModal}
+            text={"Restore the last session?"}
+            restore={this.restoreLs}
+            deleteLs={this.clearLs}
+          />
+        )}
       </div>
     );
   }
